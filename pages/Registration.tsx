@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
@@ -5,9 +6,9 @@ const Registration: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative flex min-h-screen w-full flex-col bg-background-dark text-white">
+    <div className="relative flex h-screen w-full flex-col bg-background-dark text-white overflow-hidden">
       {/* Top App Bar */}
-      <div className="sticky top-0 z-10 flex items-center justify-between bg-background-dark/80 p-4 backdrop-blur-sm">
+      <div className="shrink-0 flex items-center justify-between bg-background-dark/80 p-4 backdrop-blur-sm z-10 border-b border-white/5">
         <button 
             onClick={() => navigate(-1)}
             className="flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/10"
@@ -20,7 +21,8 @@ const Registration: React.FC = () => {
         <div className="h-10 w-10"></div>
       </div>
 
-      <div className="flex flex-1 flex-col px-4 pb-24">
+      {/* Scrollable Content Area */}
+      <div className="flex-1 overflow-y-auto px-4 pb-40 scrollbar-hide">
         {/* Profile Header */}
         <div className="flex w-full flex-col items-center gap-4 py-8">
           <div className="relative">
@@ -98,7 +100,7 @@ const Registration: React.FC = () => {
       </div>
 
       {/* Footer Action */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-white/5 bg-background-dark/95 p-4 backdrop-blur-md w-full max-w-md mx-auto">
+      <div className="absolute bottom-0 left-0 right-0 z-20 border-t border-white/5 bg-background-dark/95 p-4 backdrop-blur-md w-full">
         <button 
             onClick={() => navigate('/people')}
             className="flex h-14 w-full items-center justify-center rounded-xl bg-primary text-base font-bold text-background-dark shadow-lg transition-transform active:scale-[0.98]"
