@@ -1,0 +1,7 @@
+{
+  "name": "FaceGuard BR",
+  "description": "Aplicativo de reconhecimento facial seguro com processamento local e design moderno.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
