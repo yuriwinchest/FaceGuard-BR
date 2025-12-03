@@ -22,6 +22,21 @@ const LiveFeed: React.FC = () => {
         .animate-enter {
           animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
         }
+
+        @keyframes fadeInScale {
+          from {
+            opacity: 0;
+            transform: scale(0.8);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
+          }
+        }
+        .animate-button-enter {
+          opacity: 0;
+          animation: fadeInScale 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
+        }
       `}</style>
 
       {/* Background Image simulating Camera Feed */}
@@ -38,15 +53,28 @@ const LiveFeed: React.FC = () => {
         
         {/* Top Bar */}
         <div className="flex items-center justify-between bg-black/30 p-4 pb-3 backdrop-blur-sm">
-          <Link to="/settings" className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">
-            <span className="material-symbols-outlined text-2xl">settings</span>
-          </Link>
+          <div className="flex items-center gap-3">
+             <button 
+               onClick={() => navigate(-1)}
+               className="animate-button-enter flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
+             >
+               <span className="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+             </button>
+             <Link to="/settings" className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">
+               <span className="material-symbols-outlined text-2xl">settings</span>
+             </Link>
+          </div>
+
           <h2 className="flex-1 text-center text-lg font-bold leading-tight tracking-[-0.015em] text-white">
             Câmera ao Vivo
           </h2>
-          <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">
-            <span className="material-symbols-outlined text-2xl">flip_camera_ios</span>
-          </button>
+          
+          {/* Wrapper to balance the header for centering title */}
+          <div className="flex w-[92px] justify-end">
+            <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">
+              <span className="material-symbols-outlined text-2xl">flip_camera_ios</span>
+            </button>
+          </div>
         </div>
 
         {/* Face Detection Boxes */}
