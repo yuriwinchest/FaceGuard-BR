@@ -1,9 +1,14 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Registration: React.FC = () => {
   const navigate = useNavigate();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+
+  // Basic validation: name must not be empty, email must contain '@' and '.'
+  const isFormValid = name.trim().length > 0 && email.includes('@') && email.includes('.');
 
   return (
     <div className="relative flex h-screen w-full flex-col bg-background-dark text-white overflow-hidden">
@@ -49,6 +54,8 @@ const Registration: React.FC = () => {
               className="h-14 w-full rounded-xl border border-[#3b5443] bg-[#1c271f] px-4 text-base text-white placeholder-[#9db9a6] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               placeholder="Digite seu nome completo"
               type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
             />
           </label>
           <label className="flex flex-col gap-2">
@@ -57,6 +64,8 @@ const Registration: React.FC = () => {
               className="h-14 w-full rounded-xl border border-[#3b5443] bg-[#1c271f] px-4 text-base text-white placeholder-[#9db9a6] focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
               placeholder="Digite seu e-mail"
               type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </label>
         </div>
@@ -102,8 +111,13 @@ const Registration: React.FC = () => {
       {/* Footer Action */}
       <div className="absolute bottom-0 left-0 right-0 z-20 border-t border-white/5 bg-background-dark/95 p-4 backdrop-blur-md w-full">
         <button 
-            onClick={() => navigate('/people')}
-            className="flex h-14 w-full items-center justify-center rounded-xl bg-primary text-base font-bold text-background-dark shadow-lg transition-transform active:scale-[0.98]"
+            onClick={() => isFormValid && navigate('/people')}
+            disabled={!isFormValid}
+            className={`flex h-14 w-full items-center justify-center rounded-xl text-base font-bold text-background-dark shadow-lg transition-all ${
+              isFormValid 
+                ? 'bg-primary active:scale-[0.98] cursor-pointer' 
+                : 'bg-white/10 text-white/40 cursor-not-allowed'
+            }`}
         >
           Escanear Rosto & Registrar
         </button>
@@ -116,3 +130,4 @@ const Registration: React.FC = () => {
 };
 
 export default Registration;
+    

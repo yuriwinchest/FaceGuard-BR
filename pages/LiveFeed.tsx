@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -6,17 +7,34 @@ const LiveFeed: React.FC = () => {
 
   return (
     <div className="relative h-screen w-full bg-background-dark">
+      {/* Inline styles for the entrance animation */}
+      <style>{`
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        .animate-enter {
+          animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+      `}</style>
+
       {/* Background Image simulating Camera Feed */}
       <div className="absolute inset-0 h-full w-full">
         <img
-          className="h-full w-full object-cover opacity-90"
+          className="h-full w-full object-cover opacity-90 transition-opacity duration-1000 ease-in-out"
           alt="Camera Feed"
           src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdDuNguheCuZszKhmB41zDqKOPJsMhlKSrcFtsL7jnSpVTeivagrr-V0pct0AAMDLdJXVHzARl23DH-mKtI5iUW9edDZSmdOj8oOghQbCz37ijcP8scvuUI-Y1HGOK3xk8pDa5Mk3XvI1xd67vzTUqCw-VqqbmS5uhh_6_elNVnKInHmTymFGbE2EzG_0XwOG4RgHbUZzA-BGpUTJ-NoSGrAMQKYsxd9EQf6NeSGM2GJHgydlveiUt3r0oUcpZfzUf3G9LiEAGWAM4"
         />
       </div>
 
-      {/* Overlays Container */}
-      <div className="relative z-10 flex h-full flex-col justify-between">
+      {/* Overlays Container with Animation */}
+      <div className="relative z-10 flex h-full flex-col justify-between animate-enter">
         
         {/* Top Bar */}
         <div className="flex items-center justify-between bg-black/30 p-4 pb-3 backdrop-blur-sm">
