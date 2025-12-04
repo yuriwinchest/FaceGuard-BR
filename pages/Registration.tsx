@@ -1,17 +1,44 @@
 
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Registration: React.FC = () => {
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
+  const [scans, setScans] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Basic validation: name must not be empty, email must contain '@' and '.'
   const isFormValid = name.trim().length > 0 && email.includes('@') && email.includes('.');
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      const imageUrl = URL.createObjectURL(file);
+      setScans([...scans, imageUrl]);
+    }
+    // Reset input so same file can be selected again if needed
+    if (event.target) {
+        event.target.value = '';
+    }
+  };
+
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
+
   return (
     <div className="relative flex h-screen w-full flex-col bg-background-dark text-white overflow-hidden">
+      {/* Hidden File Input */}
+      <input
+        type="file"
+        ref={fileInputRef}
+        onChange={handleImageUpload}
+        accept="image/*"
+        className="hidden"
+      />
+
       {/* Top App Bar */}
       <div className="shrink-0 flex items-center justify-between bg-background-dark/80 p-4 backdrop-blur-sm z-10 border-b border-white/5">
         <button 
@@ -30,9 +57,13 @@ const Registration: React.FC = () => {
       <div className="flex-1 overflow-y-auto px-4 pb-40 scrollbar-hide">
         {/* Profile Header */}
         <div className="flex w-full flex-col items-center gap-4 py-8">
-          <div className="relative">
-            <div className="flex h-32 w-32 items-center justify-center rounded-full border-2 border-dashed border-[#3b5443] bg-[#1c271f]">
-              <span className="material-symbols-outlined text-5xl text-[#9db9a6]">sentiment_satisfied</span>
+          <div className="relative cursor-pointer" onClick={triggerFileInput}>
+            <div className={`flex h-32 w-32 items-center justify-center rounded-full border-2 border-dashed border-[#3b5443] bg-[#1c271f] overflow-hidden ${scans.length > 0 ? 'border-primary border-solid' : ''}`}>
+              {scans.length > 0 ? (
+                <img src={scans[0]} alt="Profile" className="h-full w-full object-cover" />
+              ) : (
+                <span className="material-symbols-outlined text-5xl text-[#9db9a6]">sentiment_satisfied</span>
+              )}
             </div>
             <button className="absolute bottom-0 right-0 flex h-10 w-10 items-center justify-center rounded-full border-2 border-background-dark bg-primary text-background-dark shadow-md transition-transform hover:scale-105 active:scale-95">
               <span className="material-symbols-outlined">add_a_photo</span>
@@ -77,28 +108,24 @@ const Registration: React.FC = () => {
             Adicione alguns scans para melhor reconhecimento em diferentes condições.
             </p>
 
-            <div className="mt-4 flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-                {/* Scan 1 */}
-                <div className="flex flex-col items-center gap-2">
-                    <div 
-                        className="h-24 w-24 shrink-0 rounded-xl bg-cover bg-center border border-[#3b5443]"
-                        style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDlj2GpOUAMPUlUmCDrAQnul8zPBRG85fzgODl2avJgXHKu904-Z1SmDvzKeEB3x3brVoN3HZlexBK-XJoddQqjXNJnI27JkkZXOCp0tuwHotE6foyLAQqMy702qwZl4vbiupkPBhBzDfVgT4GSNehfB1iZ_pi6hq4f4WHueUOGNkn9tKn0MZ5YmrHB6u4nSM36uoIG3QMNGhC-KBIjRRRtHGPg1w_XkDU0sUQTLtaGa76oUMJtGsAsDln5yEyUGL5vT15FafZpKrQ0")'}}
-                    ></div>
-                    <span className="text-xs font-medium text-white">Frente</span>
-                </div>
-
-                {/* Scan 2 */}
-                <div className="flex flex-col items-center gap-2">
-                    <div 
-                        className="h-24 w-24 shrink-0 rounded-xl bg-cover bg-center border border-[#3b5443]"
-                        style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuAaF5A38mRlW3qC-o7ekLZ4_Dngl5y09oALjn4TbK2UW42tqJCdRuSa5wN4qCIHuxo6m9xZ8a2UPUgZJOFbUGOxtuK6UH6OByiI5lez3qNxNVnQvXtccOP89_Aw4WyXQl-Y0RD_4NfB_5orXsrIm4-5R_h_Pbp1ejeszFCqKy6cWvZZ2FwvbM5NX9MC87Q2zLzNRavIXSz8A6B8HtciG2euXyJ6LEXxXq-ghQ99J7RlT4rCawCo53E_stHOukAtqwyXcaeG7j0zEDbg")'}}
-                    ></div>
-                    <span className="text-xs font-medium text-white">Perfil</span>
-                </div>
+            <div className="mt-4 flex gap-4 overflow-x-auto pb-4 scrollbar-hide scroll-smooth">
+                {/* Dynamic Scans List */}
+                {scans.map((scanUrl, index) => (
+                    <div key={index} className="flex flex-col items-center gap-2 animate-enter">
+                        <div 
+                            className="h-24 w-24 shrink-0 rounded-xl bg-cover bg-center border border-[#3b5443]"
+                            style={{backgroundImage: `url("${scanUrl}")`}}
+                        ></div>
+                        <span className="text-xs font-medium text-white">Scan {index + 1}</span>
+                    </div>
+                ))}
 
                 {/* Add Button */}
                 <div className="flex flex-col items-center gap-2">
-                    <button className="flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-[#3b5443] text-[#9db9a6] transition-colors hover:border-primary hover:text-primary active:bg-[#1c271f]">
+                    <button 
+                        onClick={triggerFileInput}
+                        className="flex h-24 w-24 shrink-0 flex-col items-center justify-center gap-1 rounded-xl border-2 border-dashed border-[#3b5443] text-[#9db9a6] transition-colors hover:border-primary hover:text-primary active:bg-[#1c271f]"
+                    >
                         <span className="material-symbols-outlined text-3xl">add_circle</span>
                         <span className="text-[10px] font-bold uppercase tracking-wider">Adicionar</span>
                     </button>
@@ -130,4 +157,3 @@ const Registration: React.FC = () => {
 };
 
 export default Registration;
-    
