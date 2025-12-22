@@ -116,7 +116,7 @@ const LiveFeed: React.FC = () => {
               <span className="text-xs font-medium">Pessoas</span>
             </Link>
 
-            {/* Shutter Button */}
+            {/* Shutter Button (Navigates to Register to scan new face) */}
             <button
               onClick={() => navigate('/register')}
               className="group relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4 border-white/20 bg-transparent transition-transform active:scale-95"
