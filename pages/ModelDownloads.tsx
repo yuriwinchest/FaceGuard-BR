@@ -5,9 +5,9 @@ const ModelDownloads: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background-dark text-white">
+    <div className="flex min-h-screen w-full flex-col bg-transparent text-white">
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center justify-between bg-background-dark/95 p-4 backdrop-blur-sm border-b border-white/5">
+      <div className="sticky top-0 z-10 flex items-center justify-between bg-transparent p-4 backdrop-blur-md border-b border-white/5">
         <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-start text-white/90">
           <span className="material-symbols-outlined">arrow_back_ios_new</span>
         </button>
@@ -19,7 +19,7 @@ const ModelDownloads: React.FC = () => {
         <section>
           <h2 className="px-2 pb-3 text-xs font-bold uppercase tracking-wider text-[#9db9a6]">Modelos Disponíveis</h2>
           <div className="overflow-hidden rounded-2xl bg-[#1c271f]">
-            
+
             {/* Model 1: Downloadable */}
             <div className="flex items-center justify-between border-b border-white/5 p-4">
               <div className="flex flex-col gap-1">

@@ -17,15 +17,27 @@ import './GlobalStyles.css';
 const AppLayout = ({ children }: { children?: React.ReactNode }) => {
   return (
     <div className="mx-auto flex h-full min-h-screen w-full max-w-md flex-col overflow-hidden bg-background-dark font-display text-white shadow-2xl relative">
-      <Toaster
-        position="top-center"
-        richColors
-        theme="dark"
-        toastOptions={{
-          style: { background: '#1c271f', border: '1px solid rgba(19, 236, 91, 0.2)', color: '#fff' },
-        }}
-      />
-      {children}
+      {/* Global Background Layer */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <img
+          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdDuNguheCuZszKhmB41zDqKOPJsMhlKSrcFtsL7jnSpVTeivagrr-V0pct0AAMDLdJXVHzARl23DH-mKtI5iUW9edDZSmdOj8oOghQbCz37ijcP8scvuUI-Y1HGOK3xk8pDa5Mk3XvI1xd67vzTUqCw-VqqbmS5uhh_6_elNVnKInHmTymFGbE2EzG_0XwOG4RgHbUZzA-BGpUTJ-NoSGrAMQKYsxd9EQf6NeSGM2GJHgydlveiUt3r0oUcpZfzUf3G9LiEAGWAM4"
+          className="h-full w-full object-cover opacity-60"
+          alt=""
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-background-dark via-background-dark/40 to-background-dark/80" />
+      </div>
+
+      <div className="relative z-10 flex flex-col h-full min-h-screen">
+        <Toaster
+          position="top-center"
+          richColors
+          theme="dark"
+          toastOptions={{
+            style: { background: '#1c271f', border: '1px solid rgba(19, 236, 91, 0.2)', color: '#fff' },
+          }}
+        />
+        {children}
+      </div>
     </div>
   );
 };

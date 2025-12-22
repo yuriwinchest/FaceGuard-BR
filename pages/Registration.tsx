@@ -129,7 +129,7 @@ const Registration: React.FC = () => {
   };
 
   return (
-    <div className="relative flex h-screen w-full flex-col bg-background-dark text-white overflow-hidden">
+    <div className="relative flex h-screen w-full flex-col bg-transparent text-white overflow-hidden">
       <header className="shrink-0 flex items-center justify-between p-4 glass z-10">
         <button onClick={() => navigate(-1)} className="h-10 w-10 flex items-center justify-center rounded-full glass hover:bg-white/10 transition-all">
           <span className="material-symbols-outlined">arrow_back_ios_new</span>

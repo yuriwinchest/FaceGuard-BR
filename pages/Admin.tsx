@@ -75,14 +75,14 @@ const Admin: React.FC = () => {
     };
 
     if (verifyingAccess) return (
-        <div className="h-screen w-full bg-background-dark flex flex-col items-center justify-center">
+        <div className="h-screen w-full bg-transparent flex flex-col items-center justify-center">
             <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
             <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Verificando Credenciais</span>
         </div>
     );
 
     if (!isAdmin) return (
-        <div className="h-screen w-full bg-background-dark flex flex-col items-center justify-center p-12 text-center">
+        <div className="h-screen w-full bg-transparent flex flex-col items-center justify-center p-12 text-center">
             <div className="w-20 h-20 rounded-3xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center mb-6">
                 <span className="material-symbols-outlined text-4xl">lock_person</span>
             </div>
@@ -116,7 +116,7 @@ const Admin: React.FC = () => {
     );
 
     return (
-        <div className="min-h-screen w-full bg-background-dark text-white p-6 pb-24">
+        <div className="min-h-screen w-full bg-transparent text-white p-6 pb-24">
             <header className="flex items-center justify-between mb-10">
                 <div>
                     <h1 className="text-3xl font-black uppercase tracking-tighter">Painel Admin</h1>

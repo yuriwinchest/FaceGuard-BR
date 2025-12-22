@@ -127,9 +127,9 @@ const LiveFeed: React.FC = () => {
   };
 
   return (
-    <div className="relative h-screen w-full bg-background-dark overflow-hidden">
+    <div className="relative h-screen w-full bg-transparent overflow-hidden">
       {/* Background Layer */}
-      <div className="absolute inset-0 h-full w-full bg-black">
+      <div className="absolute inset-0 h-full w-full bg-transparent">
         <AnimatePresence mode="wait">
           {isCameraActive ? (
             <motion.div
@@ -314,15 +314,15 @@ const LiveFeed: React.FC = () => {
               onClick={handleAction}
               disabled={isAnalyzing}
               className={`relative h-24 w-24 rounded-full border-4 flex items-center justify-center transition-all ${isAnalyzing ? 'border-primary/20 bg-white/5 shadow-none' :
-                  noFaceDetected ? 'border-yellow-500/50 bg-yellow-500/5 shadow-[0_0_40px_rgba(234,179,8,0.2)]' :
-                    notRegistered ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_40px_rgba(239,68,68,0.2)]' :
-                      'border-white/20 bg-transparent shadow-[0_0_40px_rgba(19,236,91,0.2)] hover:border-primary/50'
+                noFaceDetected ? 'border-yellow-500/50 bg-yellow-500/5 shadow-[0_0_40px_rgba(234,179,8,0.2)]' :
+                  notRegistered ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_40px_rgba(239,68,68,0.2)]' :
+                    'border-white/20 bg-transparent shadow-[0_0_40px_rgba(19,236,91,0.2)] hover:border-primary/50'
                 }`}
             >
               <div className={`h-16 w-16 rounded-full transition-all flex items-center justify-center ${isAnalyzing ? 'bg-primary/20' :
-                  noFaceDetected ? 'bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]' :
-                    notRegistered ? 'bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]' :
-                      'bg-primary glow-primary'
+                noFaceDetected ? 'bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]' :
+                  notRegistered ? 'bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]' :
+                    'bg-primary glow-primary'
                 }`}>
                 {!isCameraActive && <span className="material-symbols-outlined text-background-dark font-black text-3xl">power_settings_new</span>}
                 {isCameraActive && !isAnalyzing && !notRegistered && !noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">biometrics</span>}

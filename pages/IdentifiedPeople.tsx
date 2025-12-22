@@ -70,7 +70,7 @@ const IdentifiedPeople: React.FC = () => {
   );
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background-dark text-white overflow-hidden pb-10">
+    <div className="flex min-h-screen w-full flex-col bg-transparent text-white overflow-hidden pb-10">
       <header className="sticky top-0 z-20 flex h-20 items-center justify-between glass px-6">
         <button onClick={() => navigate('/')} className="h-10 w-10 glass rounded-full flex items-center justify-center transition-all active:scale-90">
           <span className="material-symbols-outlined">arrow_back_ios_new</span>

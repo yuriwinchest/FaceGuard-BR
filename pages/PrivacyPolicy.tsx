@@ -5,9 +5,9 @@ const PrivacyPolicy: React.FC = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background-dark text-white">
+    <div className="flex min-h-screen w-full flex-col bg-transparent text-white">
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center justify-between bg-background-dark/95 p-4 backdrop-blur-sm border-b border-white/5">
+      <div className="sticky top-0 z-10 flex items-center justify-between bg-transparent p-4 backdrop-blur-md border-b border-white/5">
         <button onClick={() => navigate(-1)} className="flex h-10 w-10 items-center justify-start text-white/90">
           <span className="material-symbols-outlined">arrow_back_ios_new</span>
         </button>
@@ -89,9 +89,9 @@ const PrivacyPolicy: React.FC = () => {
       </main>
 
       <div className="fixed bottom-0 left-0 right-0 border-t border-white/5 bg-background-dark/95 p-4 backdrop-blur-md w-full max-w-md mx-auto">
-        <button 
-            onClick={() => navigate(-1)}
-            className="flex h-12 w-full items-center justify-center rounded-xl bg-primary text-base font-bold text-background-dark transition-transform active:scale-95"
+        <button
+          onClick={() => navigate(-1)}
+          className="flex h-12 w-full items-center justify-center rounded-xl bg-primary text-base font-bold text-background-dark transition-transform active:scale-95"
         >
           Aceitar & Continuar
         </button>

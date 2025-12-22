@@ -84,11 +84,11 @@ const Auth: React.FC = () => {
     };
 
     return (
-        <div className="relative h-screen w-full bg-black overflow-hidden font-display">
-            {/* Background Layer */}
-            <div className="absolute inset-0">
+        <div className="relative h-screen w-full overflow-hidden font-display">
+            {/* Camera Layer (Shows over global background) */}
+            <div className="absolute inset-0 z-0">
                 <AnimatePresence mode="wait">
-                    {isCameraActive ? (
+                    {isCameraActive && (
                         <motion.div
                             key="camera"
                             initial={{ opacity: 0 }}
@@ -112,23 +112,8 @@ const Auth: React.FC = () => {
                                 />
                             )}
                         </motion.div>
-                    ) : (
-                        <motion.div
-                            key="intro"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 0.6 }}
-                            exit={{ opacity: 0 }}
-                            className="h-full w-full"
-                        >
-                            <img
-                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdDuNguheCuZszKhmB41zDqKOPJsMhlKSrcFtsL7jnSpVTeivagrr-V0pct0AAMDLdJXVHzARl23DH-mKtI5iUW9edDZSmdOj8oOghQbCz37ijcP8scvuUI-Y1HGOK3xk8pDa5Mk3XvI1xd67vzTUqCw-VqqbmS5uhh_6_elNVnKInHmTymFGbE2EzG_0XwOG4RgHbUZzA-BGpUTJ-NoSGrAMQKYsxd9EQf6NeSGM2GJHgydlveiUt3r0oUcpZfzUf3G9LiEAGWAM4"
-                                className="h-full w-full object-cover"
-                                alt="Intro"
-                            />
-                        </motion.div>
                     )}
                 </AnimatePresence>
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40" />
             </div>
 
             {/* Main UI Overlay */}
@@ -138,17 +123,20 @@ const Auth: React.FC = () => {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0, y: -20 }}
-                        className="relative z-10 h-full flex flex-col items-center justify-between p-12 text-center"
+                        className="relative z-10 h-full flex flex-col items-center justify-between p-12"
                     >
-                        <div className="mt-10">
-                            <motion.div
-                                animate={isAnalyzing ? { scale: [1, 1.1, 1] } : {}}
-                                className="h-16 w-16 rounded-2xl bg-primary/10 glass flex items-center justify-center text-primary glow-primary mb-6 mx-auto"
-                            >
-                                <span className="material-symbols-outlined text-4xl">shield_person</span>
-                            </motion.div>
-                            <h1 className="text-4xl font-black text-white uppercase tracking-tighter leading-none">FaceGuard<br /><span className="text-primary italic">BR</span></h1>
-                            <p className="text-[10px] text-white/40 uppercase tracking-[0.4em] font-bold mt-4">Biometria Inteligente</p>
+                        {/* Logo positioned to the side as requested */}
+                        <div className="w-full flex justify-end">
+                            <div className="text-right">
+                                <motion.div
+                                    animate={isAnalyzing ? { scale: [1, 1.1, 1] } : {}}
+                                    className="h-10 w-10 rounded-xl bg-primary/10 glass flex items-center justify-center text-primary glow-primary mb-2 ml-auto"
+                                >
+                                    <span className="material-symbols-outlined text-xl">shield_person</span>
+                                </motion.div>
+                                <h1 className="text-2xl font-black text-white uppercase tracking-tighter leading-none">FaceGuard<br /><span className="text-primary italic">BR</span></h1>
+                                <p className="text-[8px] text-white/40 uppercase tracking-[0.2em] font-bold mt-1">Biometria Inteligente</p>
+                            </div>
                         </div>
 
 
@@ -179,19 +167,18 @@ const Auth: React.FC = () => {
                                 )}
                             </motion.button>
 
-                            <div className="flex flex-col items-center gap-2">
+                            <div className="flex flex-col items-center gap-2 text-center">
                                 <p className="text-[10px] text-white/40 font-black uppercase tracking-[0.5em]">
                                     {isAnalyzing ? 'Identificando...' : (isCameraActive ? 'Posicione o Rosto' : 'Toque para Iniciar')}
                                 </p>
                                 <p className="text-[8px] text-primary font-bold uppercase tracking-[0.2em] opacity-40">Security Layer v1.5</p>
                             </div>
                         </div>
-                    </div>
                     </motion.div>
                 )}
-        </AnimatePresence>
+            </AnimatePresence>
 
-            {/* Auth Form Slide-up */ }
+            {/* Auth Form Slide-up */}
             <AnimatePresence>
                 {showForm && (
                     <motion.div
@@ -242,13 +229,13 @@ const Auth: React.FC = () => {
                 )}
             </AnimatePresence>
 
-      <style>{`
+            <style>{`
         .mirror { transform: scaleX(-1); }
         .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
         .glass-auth { background: rgba(13, 18, 14, 0.98); backdrop-filter: blur(40px); }
         .glow-primary { box-shadow: 0 0 30px rgba(19, 236, 91, 0.3); }
       `}</style>
-    </div >
+        </div >
     );
 };
 
