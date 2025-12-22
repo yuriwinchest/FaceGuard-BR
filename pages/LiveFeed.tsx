@@ -356,11 +356,11 @@ const LiveFeed: React.FC = () => {
                         'bg-primary border-primary/50 glow-primary'
                   }`}
                 >
-                  {!isCameraActive && <span className="material-symbols-outlined text-background-dark font-black text-3xl">power_settings_new</span>}
-                  {isCameraActive && !isAnalyzing && !notRegistered && !noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">biometrics</span>}
-                  {isCameraActive && !isAnalyzing && notRegistered && <span className="material-symbols-outlined text-background-dark font-black text-3xl">person_add</span>}
-                  {isCameraActive && !isAnalyzing && noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">refresh</span>}
-                  {isAnalyzing && <span className="material-symbols-outlined text-background-dark text-4xl animate-spin">sync</span>}
+                  {!isCameraActive && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">power_settings_new</span>}
+                  {isCameraActive && !isAnalyzing && !notRegistered && !noFaceDetected && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">fingerprint</span>}
+                  {isCameraActive && !isAnalyzing && notRegistered && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">person_add</span>}
+                  {isCameraActive && !isAnalyzing && noFaceDetected && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">refresh</span>}
+                  {isAnalyzing && <span className="material-symbols-outlined text-background-dark text-3xl animate-spin">sync</span>}
                 </div>
               </div>
 
@@ -386,35 +386,43 @@ const LiveFeed: React.FC = () => {
               </svg>
             </motion.button>
 
-            <div className="flex flex-col items-center gap-2 opacity-30">
-              <div className="h-12 w-12 rounded-2xl glass flex items-center justify-center border border-white/5">
-                <span className="material-symbols-outlined text-white">monitoring</span>
-              </div>
-              <span className="text-[9px] font-black text-white/50 uppercase tracking-widest">Logs</span>
+            {/* Subtle Label Under Button */}
+            <div className="absolute top-full mt-4 flex flex-col items-center pointer-events-none">
+              <span className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.2em]">
+                {isAnalyzing ? 'Analisando' : isCameraActive ? 'Biometria' : 'Ativar'}
+              </span>
             </div>
           </div>
 
-          {!isCameraActive && (
-            <motion.button
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-              onClick={() => navigate('/install')}
-              className="flex items-center gap-2 bg-white/5 border border-white/10 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all hover:bg-white/10"
-            >
-              <span className="material-symbols-outlined text-sm">download</span>
-              Instalar PWA
-            </motion.button>
-          )}
-        </footer>
+          <div className="flex flex-col items-center gap-2 opacity-30">
+            <div className="h-12 w-12 rounded-2xl glass flex items-center justify-center border border-white/5">
+              <span className="material-symbols-outlined text-white">monitoring</span>
+            </div>
+            <span className="text-[9px] font-black text-white/50 uppercase tracking-widest">Logs</span>
+          </div>
       </div>
 
-      <style>{`
+      {!isCameraActive && (
+        <motion.button
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          onClick={() => navigate('/install')}
+          className="flex items-center gap-2 bg-white/5 border border-white/10 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all hover:bg-white/10"
+        >
+          <span className="material-symbols-outlined text-sm">download</span>
+          Instalar PWA
+        </motion.button>
+      )}
+    </footer>
+      </div >
+
+  <style>{`
         .mirror { transform: scaleX(-1); }
         .glow-primary { box-shadow: 0 0 20px rgba(19, 236, 91, 0.4); }
         .shadow-glow { box-shadow: 0 0 10px #13ec5b; }
         .shadow-glow-yellow { box-shadow: 0 0 20px rgba(234, 179, 8, 0.6); }
         .shadow-glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
       `}</style>
-    </div>
+    </div >
   );
 };
 
