@@ -30,9 +30,8 @@ const Admin: React.FC = () => {
         try {
             const { data: { user } } = await supabase.auth.getUser();
 
-            // Admin check: Matches specific email or contains 'admin'
             const isUserAdmin = user?.email === 'yuriwinchest@gmail.com' ||
-                user?.email === 'yuriv@example.com' || // fallback for dev
+                user?.email === 'yuriallmeida@gmail.com' ||
                 user?.email?.toLowerCase().includes('admin');
 
             if (isUserAdmin) {
