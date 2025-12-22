@@ -21,6 +21,7 @@ const Admin: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [verifyingAccess, setVerifyingAccess] = useState(true);
+    const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
 
     useEffect(() => {
         checkAdmin();
@@ -28,21 +29,29 @@ const Admin: React.FC = () => {
 
     const checkAdmin = async () => {
         try {
-            const { data: { user } } = await supabase.auth.getUser();
+            const { data: { session } } = await supabase.auth.getSession();
+            const user = session?.user;
+            const email = user?.email?.toLowerCase().trim();
+            setCurrentUserEmail(email || 'Não Logado');
 
-            const isUserAdmin = user?.email === 'yuriwinchest@gmail.com' ||
-                user?.email === 'yuriallmeida@gmail.com' ||
-                user?.email?.toLowerCase().includes('admin');
+            // Hardcode emails with maximum robustness
+            const adminEmails = [
+                'yuriwinchest@gmail.com',
+                'yuriallmeida@gmail.com',
+                'yuriv@example.com'
+            ];
+
+            const isUserAdmin = adminEmails.some(ae => ae === email) ||
+                email?.includes('admin');
 
             if (isUserAdmin) {
                 setIsAdmin(true);
                 fetchGlobalData();
             } else {
-                toast.error("Proteção Ativa: Acesso restrito a administradores.");
-                navigate('/');
+                toast.error("Permissão Negada", { description: "Usuário não autorizado." });
             }
         } catch (err) {
-            navigate('/');
+            console.error("Auth check failed", err);
         } finally {
             setVerifyingAccess(false);
         }
@@ -78,15 +87,31 @@ const Admin: React.FC = () => {
                 <span className="material-symbols-outlined text-4xl">lock_person</span>
             </div>
             <h2 className="text-xl font-black uppercase tracking-tighter text-white mb-2">Acesso Restrito</h2>
-            <p className="text-xs text-white/40 font-bold uppercase tracking-widest leading-relaxed mb-8">
-                Seu nível de acesso atual não permite visualizar esta área.
+            <p className="text-xs text-white/40 font-bold uppercase tracking-widest leading-relaxed mb-1">
+                Área disponível apenas para administradores.
             </p>
-            <button
-                onClick={() => navigate('/')}
-                className="px-8 h-14 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
-            >
-                Voltar ao Início
-            </button>
+            <div className="bg-white/5 px-4 py-2 rounded-xl border border-white/5 mb-8">
+                <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-1">Logado como:</p>
+                <p className="text-xs font-black text-primary lowercase">{currentUserEmail}</p>
+            </div>
+
+            <div className="flex flex-col gap-3 w-full">
+                <button
+                    onClick={() => navigate('/')}
+                    className="w-full h-14 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
+                >
+                    Voltar ao Início
+                </button>
+                <button
+                    onClick={async () => {
+                        await supabase.auth.signOut();
+                        navigate('/auth');
+                    }}
+                    className="w-full h-14 bg-red-500/10 border border-red-500/20 rounded-2xl text-[10px] font-black uppercase tracking-widest text-red-500 transition-all"
+                >
+                    Trocar de Conta
+                </button>
+            </div>
         </div>
     );
 
