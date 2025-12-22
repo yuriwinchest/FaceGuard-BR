@@ -1,6 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import { supabase } from '../supabaseClient';
 
 interface Person {
@@ -34,105 +36,126 @@ const IdentifiedPeople: React.FC = () => {
         .order('last_seen', { ascending: false });
 
       if (error) throw error;
-
-      if (data) {
-        setPeople(data as any);
-      }
+      if (data) setPeople(data as any);
     } catch (error) {
-      console.error('Error fetching people:', error);
+      toast.error("Erro ao carregar banco de dados.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Helper to format date
   const formatLastSeen = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat('pt-BR', {
-      day: '2-digit',
-      month: 'short',
-      hour: '2-digit',
-      minute: '2-digit'
+      day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit'
     }).format(date);
   };
 
+  const Skeleton = () => (
+    <div className="flex flex-col gap-3">
+      {[1, 2, 3, 4, 5].map(i => (
+        <div key={i} className="flex items-center gap-4 p-4 rounded-3xl glass opacity-40">
+          <div className="w-14 h-14 rounded-full skeleton" />
+          <div className="flex-1 space-y-2">
+            <div className="h-4 w-1/2 skeleton" />
+            <div className="h-3 w-1/3 skeleton" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+
   return (
-    <div className="flex min-h-screen w-full flex-col bg-background-dark text-white">
-      {/* Header */}
-      <header className="sticky top-0 z-10 flex h-16 items-center justify-between border-b border-white/10 bg-background-dark/95 px-4 backdrop-blur-sm">
-        <button 
-            onClick={() => navigate('/')}
-            className="flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/10"
-        >
-          <span className="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
+    <div className="flex min-h-screen w-full flex-col bg-background-dark text-white overflow-hidden pb-10">
+      <header className="sticky top-0 z-20 flex h-20 items-center justify-between glass px-6">
+        <button onClick={() => navigate('/')} className="h-10 w-10 glass rounded-full flex items-center justify-center transition-all active:scale-90">
+          <span className="material-symbols-outlined">arrow_back_ios_new</span>
         </button>
-        <h1 className="text-lg font-bold">Pessoas Identificadas</h1>
-        <button className="flex h-10 w-10 items-center justify-center rounded-full text-white hover:bg-white/10">
-          <span className="material-symbols-outlined text-2xl">search</span>
+        <div className="text-center">
+          <h1 className="text-xs font-black uppercase tracking-[0.2em]">Bio-Database</h1>
+          <p className="text-[10px] text-primary font-bold uppercase">{people.length} Perfis Ativos</p>
+        </div>
+        <button className="h-10 w-10 glass rounded-full flex items-center justify-center">
+          <span className="material-symbols-outlined">filter_list</span>
         </button>
       </header>
 
-      {/* List */}
-      <main className="flex-1 overflow-y-auto px-4 pt-4 pb-24">
-        {loading ? (
-           <div className="flex h-40 items-center justify-center">
-             <div className="h-8 w-8 animate-spin rounded-full border-2 border-white/20 border-t-primary"></div>
-           </div>
-        ) : people.length === 0 ? (
-          <div className="mt-10 flex flex-col items-center justify-center text-center opacity-50">
-            <span className="material-symbols-outlined text-4xl mb-2">person_off</span>
-            <p>Nenhuma pessoa identificada ainda.</p>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-3">
-            {people.map((person) => {
-              // Use first scan as profile image or a placeholder
-              const profileImage = person.face_scans?.[0]?.image_url || null;
-              
-              return (
-                <div 
-                    key={person.id} 
-                    className="group flex cursor-pointer items-center gap-4 rounded-2xl bg-white/5 p-3 transition-colors hover:bg-white/10 active:bg-white/15"
+      <main className="flex-1 overflow-y-auto px-6 pt-8">
+        <AnimatePresence mode="wait">
+          {loading ? (
+            <motion.div key="skeleton" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+              <Skeleton />
+            </motion.div>
+          ) : people.length === 0 ? (
+            <motion.div
+              key="empty" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+              className="mt-20 flex flex-col items-center justify-center text-center gap-4 opacity-40"
+            >
+              <div className="h-20 w-20 rounded-full border-2 border-dashed border-white/20 flex items-center justify-center">
+                <span className="material-symbols-outlined text-4xl">folder_off</span>
+              </div>
+              <p className="text-sm font-bold uppercase tracking-widest">Base de Dados Vazia</p>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="list" initial="hidden" animate="show"
+              variants={{
+                show: { transition: { staggerChildren: 0.1 } }
+              }}
+              className="flex flex-col gap-4 pb-24"
+            >
+              {people.map((person) => (
+                <motion.div
+                  variants={{ hidden: { opacity: 0, x: -10 }, show: { opacity: 1, x: 0 } }}
+                  key={person.id}
+                  className="group flex items-center gap-4 rounded-[2rem] glass p-4 transition-all hover:bg-white/5 relative overflow-hidden active:scale-[0.98]"
                 >
                   <div className="relative">
-                    <div 
-                        className="h-14 w-14 shrink-0 rounded-full bg-cover bg-center border-2 border-transparent group-hover:border-primary transition-colors bg-[#1c271f]"
-                        style={profileImage ? {backgroundImage: `url("${profileImage}")`} : {}}
+                    <div
+                      className="h-16 w-16 shrink-0 rounded-2xl bg-cover bg-center border border-white/10 group-hover:border-primary transition-all glow-primary shadow-2xl relative z-10"
+                      style={person.face_scans?.[0] ? { backgroundImage: `url("${person.face_scans[0].image_url}")` } : {}}
                     >
-                      {!profileImage && (
-                         <div className="flex h-full w-full items-center justify-center">
-                            <span className="material-symbols-outlined text-[#9db9a6]">person</span>
-                         </div>
+                      {!person.face_scans?.[0] && (
+                        <div className="flex h-full w-full items-center justify-center bg-surface-dark">
+                          <span className="material-symbols-outlined text-white/20 text-3xl">person</span>
+                        </div>
                       )}
                     </div>
                   </div>
-                  
-                  <div className="flex flex-1 flex-col justify-center gap-0.5">
-                    <p className="text-base font-bold leading-none text-white">{person.full_name}</p>
-                    <p className="text-sm text-[#9db9a6]">{formatLastSeen(person.last_seen)}</p>
+
+                  <div className="flex flex-1 flex-col justify-center">
+                    <h3 className="text-base font-black text-white group-hover:text-primary transition-colors">{person.full_name}</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                      <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest">visto em: {formatLastSeen(person.last_seen)}</p>
+                    </div>
                   </div>
-                  
-                  <div className="flex h-10 w-10 items-center justify-center text-[#9db9a6] group-hover:text-primary transition-colors">
-                    <span className="material-symbols-outlined text-2xl">chevron_right</span>
+
+                  <div className="text-white/20 group-hover:text-primary transition-colors">
+                    <span className="material-symbols-outlined">chevron_right</span>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
 
-      {/* FAB */}
-      <div className="fixed bottom-6 right-0 left-0 mx-auto w-full max-w-md px-6 pointer-events-none">
-        <div className="flex justify-end pointer-events-auto">
-            <button 
-                onClick={() => navigate('/register')}
-                className="flex h-14 w-14 items-center justify-center rounded-full bg-primary text-background-dark shadow-xl shadow-primary/20 transition-transform hover:scale-105 active:scale-95"
-            >
-            <span className="material-symbols-outlined text-3xl">add</span>
-            </button>
-        </div>
+      <div className="fixed bottom-8 right-8 z-30">
+        <motion.button
+          whileHover={{ scale: 1.1, rotate: 90 }} whileTap={{ scale: 0.9 }}
+          onClick={() => navigate('/register')}
+          className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary text-background-dark shadow-2xl glow-primary transition-all"
+        >
+          <span className="material-symbols-outlined text-3xl font-black">add</span>
+        </motion.button>
       </div>
+
+      <style>{`
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.05); }
+        .skeleton { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite linear; }
+        @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
+      `}</style>
     </div>
   );
 };

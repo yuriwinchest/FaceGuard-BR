@@ -1,0 +1,57 @@
+
+:root {
+  --color-primary: #13ec5b;
+  --color-primary-low: rgba(19, 236, 91, 0.1);
+  --color-primary-mid: rgba(19, 236, 91, 0.4);
+  --bg-dark: #102216;
+  --surface-dark: #1c271f;
+  --text-muted: #9db9a6;
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.animate-scale-up {
+  animation: scaleUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1c271f 25%, #2a3a2e 50%, #1c271f 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 1rem;
+}
+
+.glass {
+  background: rgba(28, 39, 31, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.glow-primary {
+  box-shadow: 0 0 20px var(--color-primary-mid);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-Line-thumb {
+  background: var(--color-primary-mid);
+  border-radius: 10px;
+}
+
+.perspective-1000 {
+  perspective: 1000px;
+}
