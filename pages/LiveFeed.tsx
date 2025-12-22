@@ -310,26 +310,80 @@ const LiveFeed: React.FC = () => {
             </Link>
 
             <motion.button
-              whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }}
+              whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={handleAction}
               disabled={isAnalyzing}
-              className={`relative h-24 w-24 rounded-full border-4 flex items-center justify-center transition-all ${isAnalyzing ? 'border-primary/20 bg-white/5 shadow-none' :
-                noFaceDetected ? 'border-yellow-500/50 bg-yellow-500/5 shadow-[0_0_40px_rgba(234,179,8,0.2)]' :
-                  notRegistered ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_40px_rgba(239,68,68,0.2)]' :
-                    'border-white/20 bg-transparent shadow-[0_0_40px_rgba(19,236,91,0.2)] hover:border-primary/50'
-                }`}
+              className="relative h-28 w-28 flex items-center justify-center group"
             >
-              <div className={`h-16 w-16 rounded-full transition-all flex items-center justify-center ${isAnalyzing ? 'bg-primary/20' :
-                noFaceDetected ? 'bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]' :
-                  notRegistered ? 'bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]' :
-                    'bg-primary glow-primary'
-                }`}>
-                {!isCameraActive && <span className="material-symbols-outlined text-background-dark font-black text-3xl">power_settings_new</span>}
-                {isCameraActive && !isAnalyzing && !notRegistered && !noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">biometrics</span>}
-                {isCameraActive && !isAnalyzing && notRegistered && <span className="material-symbols-outlined text-background-dark font-black text-3xl">person_add</span>}
-                {isCameraActive && !isAnalyzing && noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">refresh</span>}
-                {isAnalyzing && <span className="material-symbols-outlined text-primary/40 text-4xl animate-spin">sync</span>}
+              {/* Arc Reactor Outer Rings */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                className={`absolute inset-0 rounded-full border-2 border-dashed border-primary/20 ${isAnalyzing ? 'opacity-100' : 'opacity-40'}`}
+              />
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                className={`absolute inset-2 rounded-full border border-dotted border-primary/30 ${isAnalyzing ? 'opacity-100' : 'opacity-60'}`}
+              />
+
+              {/* Arc Reactor Tech Segments */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                {[...Array(6)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ rotate: i * 60 }}
+                    className="absolute w-full h-full flex justify-center"
+                  >
+                    <div className={`w-1.5 h-3 rounded-full mt-1 ${isAnalyzing ? 'bg-primary' : 'bg-primary/20'} transition-colors duration-500`} />
+                  </motion.div>
+                ))}
               </div>
+
+              {/* Glowing Core */}
+              <div className={`relative h-20 w-20 rounded-full flex items-center justify-center transition-all duration-500 z-10 
+                ${isAnalyzing ? 'bg-primary/30 shadow-[0_0_40px_rgba(19,236,91,0.6)]' :
+                  noFaceDetected ? 'bg-yellow-500/20 shadow-[0_0_30px_rgba(234,179,8,0.3)]' :
+                    notRegistered ? 'bg-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.3)]' :
+                      'bg-primary/10 shadow-[0_0_25px_rgba(255,255,255,0.1)] group-hover:bg-primary/20 group-hover:shadow-[0_0_30px_rgba(19,236,91,0.4)]'
+                }`}
+              >
+                {/* Inner Core Surface */}
+                <div className={`h-14 w-14 rounded-full flex items-center justify-center border-2 z-20 transition-all duration-500
+                  ${isAnalyzing ? 'bg-primary border-white shadow-glow' :
+                    noFaceDetected ? 'bg-yellow-500 border-yellow-200 shadow-glow-yellow' :
+                      notRegistered ? 'bg-red-500 border-red-200 shadow-glow-red' :
+                        'bg-primary border-primary/50 glow-primary'
+                  }`}
+                >
+                  {!isCameraActive && <span className="material-symbols-outlined text-background-dark font-black text-3xl">power_settings_new</span>}
+                  {isCameraActive && !isAnalyzing && !notRegistered && !noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">biometrics</span>}
+                  {isCameraActive && !isAnalyzing && notRegistered && <span className="material-symbols-outlined text-background-dark font-black text-3xl">person_add</span>}
+                  {isCameraActive && !isAnalyzing && noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">refresh</span>}
+                  {isAnalyzing && <span className="material-symbols-outlined text-background-dark text-4xl animate-spin">sync</span>}
+                </div>
+              </div>
+
+              {/* High-Tech HUD Details */}
+              <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+                <circle
+                  cx="50" cy="50" r="48"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="0.5"
+                  className="text-primary/10"
+                />
+                <motion.circle
+                  cx="50" cy="50" r="48"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeDasharray="10 241"
+                  className="text-primary"
+                  animate={{ strokeDashoffset: [0, -301] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                />
+              </svg>
             </motion.button>
 
             <div className="flex flex-col items-center gap-2 opacity-30">
@@ -357,6 +411,8 @@ const LiveFeed: React.FC = () => {
         .mirror { transform: scaleX(-1); }
         .glow-primary { box-shadow: 0 0 20px rgba(19, 236, 91, 0.4); }
         .shadow-glow { box-shadow: 0 0 10px #13ec5b; }
+        .shadow-glow-yellow { box-shadow: 0 0 20px rgba(234, 179, 8, 0.6); }
+        .shadow-glow-red { box-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
       `}</style>
     </div>
   );
