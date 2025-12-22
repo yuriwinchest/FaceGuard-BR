@@ -1,148 +1,192 @@
 
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 const LiveFeed: React.FC = () => {
   const navigate = useNavigate();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [profileCount, setProfileCount] = useState<number | null>(null);
+  const [identifiedPerson, setIdentifiedPerson] = useState<{ name: string, accuracy: string } | null>(null);
+
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  useEffect(() => {
+    checkProfiles();
+    startCamera();
+    return () => stopCamera();
+  }, []);
+
+  const checkProfiles = async () => {
+    const { count, error } = await supabase
+      .from('profiles')
+      .select('*', { count: 'exact', head: true });
+
+    if (!error) setProfileCount(count);
+  };
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user' },
+        audio: false
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (err) {
+      console.error("Camera access error:", err);
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+    }
+  };
+
+  const handleAction = async () => {
+    if (profileCount === 0) {
+      // No one registered yet
+      navigate('/register');
+    } else {
+      // Simulating recognition workflow
+      setIsAnalyzing(true);
+      setIdentifiedPerson(null);
+
+      // Wait 2 seconds to "find" someone
+      setTimeout(async () => {
+        // Fetch a random profile to "recognize"
+        const { data } = await supabase.from('profiles').select('full_name').limit(1).single();
+
+        if (data) {
+          setIdentifiedPerson({
+            name: data.full_name,
+            accuracy: (95 + Math.random() * 4).toFixed(1) + '%'
+          });
+          setIsAnalyzing(false);
+
+          // Optionally auto-navigate after recognition
+          // setTimeout(() => navigate('/people'), 3000);
+        } else {
+          setIsAnalyzing(false);
+          navigate('/register');
+        }
+      }, 2000);
+    }
+  };
 
   return (
-    <div className="relative h-screen w-full bg-background-dark">
-      {/* Inline styles for the entrance animation */}
+    <div className="relative h-screen w-full bg-background-dark overflow-hidden">
       <style>{`
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
+        @keyframes scan {
+          0% { top: 0%; }
+          100% { top: 100%; }
         }
-        .animate-enter {
-          animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        .scan-line {
+          position: absolute;
+          left: 0;
+          width: 100%;
+          height: 2px;
+          background: rgba(19, 236, 91, 0.5);
+          box-shadow: 0 0 15px rgba(19, 236, 91, 0.8);
+          animation: scan 2s linear infinite;
         }
-
-        @keyframes fadeInScale {
-          from {
-            opacity: 0;
-            transform: scale(0.8);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        .animate-button-enter {
-          opacity: 0;
-          animation: fadeInScale 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.3s forwards;
-        }
+        .mirror { transform: scaleX(-1); }
       `}</style>
 
-      {/* Background Image simulating Camera Feed */}
+      {/* Camera Feed */}
       <div className="absolute inset-0 h-full w-full">
-        <img
-          className="h-full w-full object-cover opacity-90 transition-opacity duration-1000 ease-in-out"
-          alt="Camera Feed"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCdDuNguheCuZszKhmB41zDqKOPJsMhlKSrcFtsL7jnSpVTeivagrr-V0pct0AAMDLdJXVHzARl23DH-mKtI5iUW9edDZSmdOj8oOghQbCz37ijcP8scvuUI-Y1HGOK3xk8pDa5Mk3XvI1xd67vzTUqCw-VqqbmS5uhh_6_elNVnKInHmTymFGbE2EzG_0XwOG4RgHbUZzA-BGpUTJ-NoSGrAMQKYsxd9EQf6NeSGM2GJHgydlveiUt3r0oUcpZfzUf3G9LiEAGWAM4"
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className="h-full w-full object-cover mirror opacity-80"
         />
+        {isAnalyzing && <div className="scan-line z-20" />}
       </div>
 
-      {/* Overlays Container with Animation */}
-      <div className="relative z-10 flex h-full flex-col justify-between animate-enter">
+      {/* Main UI Overlay */}
+      <div className="relative z-10 flex h-full flex-col justify-between">
 
         {/* Top Bar */}
-        <div className="flex items-center justify-between bg-black/30 p-4 pb-3 backdrop-blur-sm">
+        <div className="flex items-center justify-between bg-black/40 p-4 backdrop-blur-md">
           <div className="flex items-center gap-3">
-            <button
-              onClick={() => navigate(-1)}
-              className="animate-button-enter flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20"
-            >
-              <span className="material-symbols-outlined text-2xl">arrow_back_ios_new</span>
-            </button>
-            <Link to="/settings" className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">
-              <span className="material-symbols-outlined text-2xl">settings</span>
+            <Link to="/settings" className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-white">
+              <span className="material-symbols-outlined">settings</span>
             </Link>
           </div>
-
-          <h2 className="flex-1 text-center text-lg font-bold leading-tight tracking-[-0.015em] text-white">
-            Câmera ao Vivo
-          </h2>
-
-          {/* Wrapper to balance the header for centering title */}
-          <div className="flex w-[92px] justify-end">
-            <button className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-full bg-white/10 text-white transition-colors hover:bg-white/20">
-              <span className="material-symbols-outlined text-2xl">flip_camera_ios</span>
-            </button>
-          </div>
+          <h2 className="flex-1 text-center font-bold text-white uppercase tracking-widest text-sm">FaceGuard Live Feed</h2>
+          <div className="w-10"></div>
         </div>
 
-        {/* Face Detection Boxes */}
-        <div className="pointer-events-none absolute inset-0">
-
-          {/* Recognized Face (Green) */}
-          <div className="absolute top-[25%] left-[35%] h-[25%] w-[30%]">
-            <div className="absolute -top-9 left-0 animate-bounce">
-              <div className="flex items-center gap-2 rounded-full bg-primary/90 px-3 py-1 text-sm font-bold text-background-dark backdrop-blur-md shadow-lg">
-                <span>Jane Doe</span>
-                <span className="h-3 w-px bg-background-dark/30"></span>
-                <span>98%</span>
+        {/* Recognition Visuals */}
+        <div className="flex-1 relative flex items-center justify-center pointer-events-none">
+          {identifiedPerson && !isAnalyzing && (
+            <div className="absolute animate-scale-up flex flex-col items-center gap-4">
+              <div className="w-48 h-48 border-4 border-primary rounded-full shadow-[0_0_50px_rgba(19,236,91,0.4)] flex items-center justify-center bg-primary/10 backdrop-blur-sm">
+                <div className="flex flex-col items-center text-center p-4">
+                  <span className="text-xs font-bold text-primary uppercase mb-1">Identificado</span>
+                  <span className="text-xl font-black text-white leading-tight">{identifiedPerson.name}</span>
+                  <span className="text-sm font-bold text-primary mt-1">{identifiedPerson.accuracy}</span>
+                </div>
+              </div>
+              <div className="bg-primary px-4 py-1 rounded-full text-background-dark font-black text-xs uppercase animate-pulse">
+                Acesso Liberado
               </div>
             </div>
-            <div className="h-full w-full rounded-xl border-2 border-primary shadow-[0_0_20px_rgba(19,236,91,0.3)]"></div>
+          )}
 
-            {/* Corner Markers for tech feel */}
-            <div className="absolute -top-0.5 -left-0.5 h-4 w-4 border-t-4 border-l-4 border-primary"></div>
-            <div className="absolute -top-0.5 -right-0.5 h-4 w-4 border-t-4 border-r-4 border-primary"></div>
-            <div className="absolute -bottom-0.5 -left-0.5 h-4 w-4 border-b-4 border-l-4 border-primary"></div>
-            <div className="absolute -bottom-0.5 -right-0.5 h-4 w-4 border-b-4 border-r-4 border-primary"></div>
-          </div>
-
-          {/* Unrecognized Face (Dashed White) */}
-          <div className="absolute top-[55%] left-[15%] h-[20%] w-[25%] opacity-60">
-            <div className="h-full w-full rounded-xl border-2 border-dashed border-white/60"></div>
-          </div>
-
+          {isAnalyzing && (
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-32 h-32 border-2 border-dashed border-white/50 rounded-full animate-spin flex items-center justify-center">
+                <span className="material-symbols-outlined text-4xl text-white">sync</span>
+              </div>
+              <span className="text-white font-bold uppercase tracking-widest text-xs">Analisando Biometria...</span>
+            </div>
+          )}
         </div>
 
         {/* Bottom Controls */}
-        <div className="flex w-full flex-col items-center gap-4 bg-gradient-to-t from-black/80 to-transparent pb-8 pt-10">
+        <div className="bg-gradient-to-t from-black/90 via-black/40 to-transparent p-6 flex flex-col gap-6 items-center">
 
-          <div className="flex w-full items-center justify-around px-8">
-            <Link to="/people" className="flex flex-col items-center gap-1 text-white/80 hover:text-white">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
-                <span className="material-symbols-outlined">people</span>
+          <div className="flex w-full items-center justify-between max-w-sm">
+            <Link to="/people" className="flex flex-col items-center gap-1 group">
+              <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                <span className="material-symbols-outlined text-white group-hover:text-primary">group</span>
               </div>
-              <span className="text-xs font-medium">Pessoas</span>
+              <span className="text-[10px] font-bold text-white/60 uppercase">Base de Dados</span>
             </Link>
 
-            {/* Shutter Button (Navigates to Register to scan new face) */}
             <button
-              onClick={() => navigate('/register')}
-              className="group relative flex h-20 w-20 shrink-0 items-center justify-center rounded-full border-4 border-white/20 bg-transparent transition-transform active:scale-95"
+              onClick={handleAction}
+              disabled={isAnalyzing}
+              className={`relative h-20 w-20 rounded-full border-4 flex items-center justify-center transition-all ${isAnalyzing ? 'border-primary/20 bg-white/5' : 'border-white/30 bg-transparent active:scale-90 hover:border-primary'
+                }`}
             >
-              <div className="h-[64px] w-[64px] rounded-full bg-primary transition-all group-hover:scale-105 group-active:scale-90 shadow-[0_0_15px_rgba(19,236,91,0.5)]"></div>
+              <div className={`h-14 w-14 rounded-full shadow-2xl transition-all ${isAnalyzing ? 'bg-primary/20 animate-pulse' : 'bg-primary'
+                }`}></div>
+              {isAnalyzing && <div className="absolute inset-0 rounded-full border-2 border-primary border-t-transparent animate-spin"></div>}
             </button>
 
-            <div className="flex flex-col items-center gap-1 text-white/80 hover:text-white opacity-50">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-md">
-                <span className="material-symbols-outlined">photo_library</span>
+            <div className="flex flex-col items-center gap-1 opacity-40">
+              <div className="h-12 w-12 rounded-full bg-white/10 flex items-center justify-center">
+                <span className="material-symbols-outlined text-white">history</span>
               </div>
-              <span className="text-xs font-medium">Galeria</span>
+              <span className="text-[10px] font-bold text-white/60 uppercase">Histórico</span>
             </div>
           </div>
 
-          {/* PWA Install Button - Always visible for easier access */}
-          <div id="install-container" className="animate-enter">
-            <button
-              onClick={() => navigate('/install')}
-              className="group flex items-center gap-2 rounded-full border border-primary/30 bg-black/40 px-6 py-2.5 font-bold text-primary backdrop-blur-md transition-all hover:bg-primary/20 active:scale-95 shadow-[0_0_20px_rgba(19,236,91,0.2)]"
-            >
-              <span className="material-symbols-outlined text-xl">download_for_offline</span>
-              Instalar Aplicativo
-            </button>
-          </div>
-
+          <button
+            onClick={() => navigate('/install')}
+            className="flex items-center gap-2 bg-primary/10 border border-primary/30 px-6 py-2 rounded-full text-primary font-bold text-xs uppercase tracking-tighter hover:bg-primary/20 transition-all"
+          >
+            <span className="material-symbols-outlined text-sm">download</span>
+            Instalar App
+          </button>
         </div>
       </div>
     </div>
