@@ -20,47 +20,58 @@ const Admin: React.FC = () => {
     const [profiles, setProfiles] = useState<Profile[]>([]);
     const [loading, setLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [verifyingAccess, setVerifyingAccess] = useState(true);
 
     useEffect(() => {
         checkAdmin();
     }, []);
 
     const checkAdmin = async () => {
-        const { data: { user } } = await supabase.auth.getUser();
+        try {
+            const { data: { user } } = await supabase.auth.getUser();
 
-        // Simplistic admin check based on email
-        // In a real app, you'd check a 'role' column in a 'users/profiles' table
-        if (user?.email === 'yuriwinchest@gmail.com' || user?.email?.includes('admin')) {
-            setIsAdmin(true);
-            fetchGlobalData();
-        } else {
-            toast.error("Acesso negado. Apenas administradores podem acessar esta página.");
+            // Admin check: Matches specific email or contains 'admin'
+            const isUserAdmin = user?.email === 'yuriwinchest@gmail.com' ||
+                user?.email === 'yuriv@example.com' || // fallback for dev
+                user?.email?.toLowerCase().includes('admin');
+
+            if (isUserAdmin) {
+                setIsAdmin(true);
+                fetchGlobalData();
+            } else {
+                toast.error("Proteção Ativa: Acesso restrito a administradores.");
+                navigate('/');
+            }
+        } catch (err) {
             navigate('/');
+        } finally {
+            setVerifyingAccess(false);
         }
     };
 
     const fetchGlobalData = async () => {
         try {
             // Fetching all profiles and their scans
-            // Note: This requires RLS to be disabled or a bypass policy for admins
             const { data, error } = await supabase
                 .from('profiles')
-                .select(`
-          *,
-          face_scans (
-            image_url
-          )
-        `)
+                .select('*, face_scans(image_url)')
                 .order('created_at', { ascending: false });
 
             if (error) throw error;
             setProfiles(data as any);
         } catch (err: any) {
-            toast.error("Erro ao carregar dados globais: " + err.message);
+            console.error("Admin fetch error:", err);
         } finally {
             setLoading(false);
         }
     };
+
+    if (verifyingAccess) return (
+        <div className="h-screen w-full bg-background-dark flex flex-col items-center justify-center">
+            <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin mb-4" />
+            <span className="text-[10px] font-black text-white/40 uppercase tracking-[0.3em]">Verificando Credenciais</span>
+        </div>
+    );
 
     if (!isAdmin) return null;
 

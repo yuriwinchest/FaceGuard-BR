@@ -37,8 +37,9 @@ self.addEventListener('activate', (event) => {
 
 // Fetch event
 self.addEventListener('fetch', (event) => {
-  // Only handle GET requests
-  if (event.request.method !== 'GET') return;
+  // Only handle GET requests and http/https schemes
+  const url = new URL(event.request.url);
+  if (event.request.method !== 'GET' || !url.protocol.startsWith('http')) return;
 
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {

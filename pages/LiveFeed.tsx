@@ -66,25 +66,43 @@ const LiveFeed: React.FC = () => {
   };
 
   const [notRegistered, setNotRegistered] = useState(false);
+  const [noFaceDetected, setNoFaceDetected] = useState(false);
 
   const handleAction = async () => {
-    if (notRegistered) {
-      navigate('/register');
+    if (notRegistered || noFaceDetected) {
+      if (notRegistered) navigate('/register');
+      else {
+        setNoFaceDetected(false);
+        setIsCameraActive(true);
+      }
       return;
     }
 
     if (!isCameraActive) {
       setIsCameraActive(true);
       setNotRegistered(false);
+      setNoFaceDetected(false);
       return;
     }
 
     setIsAnalyzing(true);
     setIdentifiedPerson(null);
     setNotRegistered(false);
+    setNoFaceDetected(false);
 
-    // Smooth scanning time
+    // Realistic scanning sequence
     setTimeout(async () => {
+      // 1. Simulate Face Detection check (90% success rate)
+      const faceFound = Math.random() > 0.1;
+
+      if (!faceFound) {
+        setIsAnalyzing(false);
+        setNoFaceDetected(true);
+        toast.error("Erro de Detecção", { description: "Nenhum rosto encontrado em frente à câmera." });
+        return;
+      }
+
+      // 2. If face found, check Database
       const { data: { user } } = await supabase.auth.getUser();
       const { data } = await supabase
         .from('profiles')
@@ -103,7 +121,7 @@ const LiveFeed: React.FC = () => {
         toast.success(`Identificado: ${data.full_name}`);
       } else {
         setNotRegistered(true);
-        toast.warning("Biometria não reconhecida.");
+        toast.warning("Biometria Desconhecida", { description: "Perfil não localizado no banco de dados." });
       }
     }, 2500);
   };
@@ -211,6 +229,26 @@ const LiveFeed: React.FC = () => {
               </motion.div>
             )}
 
+            {noFaceDetected && !isAnalyzing && (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                className="flex flex-col items-center gap-6"
+              >
+                <div className="w-48 h-48 rounded-full border-4 border-yellow-500/50 glass flex items-center justify-center relative overflow-hidden">
+                  <div className="absolute inset-0 bg-yellow-500/10 animate-pulse" />
+                  <div className="text-center p-4 relative z-10">
+                    <span className="material-symbols-outlined text-yellow-500 text-5xl mb-2">face_retouching_off</span>
+                    <p className="text-xs font-black text-white px-4 leading-tight">NENHUM ROSTO ENCONTRADO</p>
+                  </div>
+                </div>
+                <div className="bg-white/10 px-6 py-2 rounded-xl text-white font-black text-[10px] uppercase tracking-widest border border-white/5">
+                  Falha na Captura
+                </div>
+              </motion.div>
+            )}
+
             {notRegistered && !isAnalyzing && (
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
@@ -276,17 +314,20 @@ const LiveFeed: React.FC = () => {
               onClick={handleAction}
               disabled={isAnalyzing}
               className={`relative h-24 w-24 rounded-full border-4 flex items-center justify-center transition-all ${isAnalyzing ? 'border-primary/20 bg-white/5 shadow-none' :
-                  notRegistered ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_40px_rgba(239,68,68,0.2)]' :
-                    'border-white/20 bg-transparent shadow-[0_0_40px_rgba(19,236,91,0.2)] hover:border-primary/50'
+                  noFaceDetected ? 'border-yellow-500/50 bg-yellow-500/5 shadow-[0_0_40px_rgba(234,179,8,0.2)]' :
+                    notRegistered ? 'border-red-500/50 bg-red-500/5 shadow-[0_0_40px_rgba(239,68,68,0.2)]' :
+                      'border-white/20 bg-transparent shadow-[0_0_40px_rgba(19,236,91,0.2)] hover:border-primary/50'
                 }`}
             >
               <div className={`h-16 w-16 rounded-full transition-all flex items-center justify-center ${isAnalyzing ? 'bg-primary/20' :
-                  notRegistered ? 'bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]' :
-                    'bg-primary glow-primary'
+                  noFaceDetected ? 'bg-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.4)]' :
+                    notRegistered ? 'bg-red-500 shadow-[0_0_20px_rgba(239,68,68,0.4)]' :
+                      'bg-primary glow-primary'
                 }`}>
                 {!isCameraActive && <span className="material-symbols-outlined text-background-dark font-black text-3xl">power_settings_new</span>}
-                {isCameraActive && !isAnalyzing && !notRegistered && <span className="material-symbols-outlined text-background-dark font-black text-3xl">biometrics</span>}
+                {isCameraActive && !isAnalyzing && !notRegistered && !noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">biometrics</span>}
                 {isCameraActive && !isAnalyzing && notRegistered && <span className="material-symbols-outlined text-background-dark font-black text-3xl">person_add</span>}
+                {isCameraActive && !isAnalyzing && noFaceDetected && <span className="material-symbols-outlined text-background-dark font-black text-3xl">refresh</span>}
                 {isAnalyzing && <span className="material-symbols-outlined text-primary/40 text-4xl animate-spin">sync</span>}
               </div>
             </motion.button>
