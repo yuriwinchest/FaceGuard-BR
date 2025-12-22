@@ -18,12 +18,12 @@ const Settings: React.FC = () => {
       </div>
 
       <main className="flex flex-col gap-8 pb-12 pt-4">
-        
+
         {/* FACIAL RECOGNITION */}
         <section className="flex flex-col gap-2 px-4">
           <h2 className="px-2 text-xs font-bold uppercase tracking-wider text-[#9db9a6]">Reconhecimento Facial</h2>
           <div className="overflow-hidden rounded-2xl bg-[#1c271f]">
-            
+
             {/* Sensitivity Slider */}
             <div className="border-b border-white/5 p-4">
               <div className="mb-3 flex items-center justify-between">
@@ -32,7 +32,7 @@ const Settings: React.FC = () => {
               </div>
               <div className="relative flex h-6 w-full items-center">
                 <div className="h-1.5 w-full rounded-full bg-white/10">
-                   <div className="h-full w-1/2 rounded-full bg-primary"></div>
+                  <div className="h-full w-1/2 rounded-full bg-primary"></div>
                 </div>
                 <div className="absolute left-1/2 h-5 w-5 -translate-x-1/2 rounded-full border-2 border-white bg-primary shadow-md"></div>
               </div>
@@ -73,7 +73,7 @@ const Settings: React.FC = () => {
         <section className="flex flex-col gap-2 px-4">
           <h2 className="px-2 text-xs font-bold uppercase tracking-wider text-[#9db9a6]">Privacidade e Dados</h2>
           <div className="overflow-hidden rounded-2xl bg-[#1c271f]">
-            
+
             <div className="flex items-center justify-between border-b border-white/5 p-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5">
@@ -117,7 +117,7 @@ const Settings: React.FC = () => {
         <section className="flex flex-col gap-2 px-4">
           <h2 className="px-2 text-xs font-bold uppercase tracking-wider text-[#9db9a6]">Geral</h2>
           <div className="overflow-hidden rounded-2xl bg-[#1c271f]">
-            
+
             <div className="flex items-center justify-between border-b border-white/5 p-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5">
@@ -167,11 +167,30 @@ const Settings: React.FC = () => {
           </div>
         </section>
 
+        {/* INSTALLATION */}
+        <section className="flex flex-col gap-2 px-4">
+          <h2 className="px-2 text-xs font-bold uppercase tracking-wider text-[#9db9a6]">Instalação</h2>
+          <div className="overflow-hidden rounded-2xl bg-[#1c271f]">
+            <Link to="/install" className="flex items-center justify-between p-4 transition-colors hover:bg-white/5">
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10">
+                  <span className="material-symbols-outlined text-primary">download_for_offline</span>
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-medium">Instalar no Dispositivo</span>
+                  <span className="text-xs text-white/50">Usar como Aplicativo Nativo</span>
+                </div>
+              </div>
+              <span className="material-symbols-outlined text-white/40">chevron_right</span>
+            </Link>
+          </div>
+        </section>
+
         {/* ABOUT */}
         <section className="flex flex-col gap-2 px-4">
           <h2 className="px-2 text-xs font-bold uppercase tracking-wider text-[#9db9a6]">Sobre</h2>
           <div className="overflow-hidden rounded-2xl bg-[#1c271f]">
-            
+
             <div className="flex items-center justify-between border-b border-white/5 p-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/5">
