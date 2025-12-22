@@ -11,6 +11,7 @@ import ModelDownloads from './pages/ModelDownloads';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import InstallDetails from './pages/InstallDetails';
 import Auth from './pages/Auth';
+import Admin from './pages/Admin';
 import './GlobalStyles.css';
 
 const AppLayout = ({ children }: { children?: React.ReactNode }) => {
@@ -63,6 +64,7 @@ const AnimatedRoutes = () => {
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
         <Route path="/auth" element={<PageWrapper><Auth /></PageWrapper>} />
+        <Route path="/admin" element={<ProtectedRoute><PageWrapper><Admin /></PageWrapper></ProtectedRoute>} />
         <Route path="/" element={<ProtectedRoute><PageWrapper><LiveFeed /></PageWrapper></ProtectedRoute>} />
         <Route path="/register" element={<ProtectedRoute><PageWrapper><Registration /></PageWrapper></ProtectedRoute>} />
         <Route path="/people" element={<ProtectedRoute><PageWrapper><IdentifiedPeople /></PageWrapper></ProtectedRoute>} />
