@@ -100,7 +100,14 @@ const Registration: React.FC = () => {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.from('profiles').insert([{ full_name: name, email: email }]).select().single();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Usuário não autenticado");
+
+      const { data, error } = await supabase.from('profiles').insert([{
+        full_name: name,
+        email: email,
+        user_id: user.id
+      }]).select().single();
       if (error) throw error;
       if (data) {
         await uploadImages(data.id);

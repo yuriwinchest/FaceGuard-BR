@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { supabase } from '../supabaseClient';
 
 const Settings: React.FC = () => {
   const navigate = useNavigate();
@@ -211,6 +212,31 @@ const Settings: React.FC = () => {
               <span className="material-symbols-outlined text-white/40">chevron_right</span>
             </button>
 
+          </div>
+        </section>
+
+        {/* ACCOUNT */}
+        <section className="flex flex-col gap-2 px-4">
+          <h2 className="px-2 text-xs font-bold uppercase tracking-wider text-[#9db9a6]">Conta</h2>
+          <div className="overflow-hidden rounded-2xl bg-[#1c271f]">
+            <button
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate('/auth');
+              }}
+              className="flex w-full items-center justify-between p-4 transition-colors hover:bg-red-500/5 group"
+            >
+              <div className="flex items-center gap-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-red-500/10 text-red-500">
+                  <span className="material-symbols-outlined">logout</span>
+                </div>
+                <div className="flex flex-col items-start">
+                  <span className="font-medium text-red-500">Sair da Conta</span>
+                  <span className="text-xs text-red-500/50">Encerrar sessão protegida</span>
+                </div>
+              </div>
+              <span className="material-symbols-outlined text-red-500/40">chevron_right</span>
+            </button>
           </div>
         </section>
 

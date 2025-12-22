@@ -23,6 +23,9 @@ const IdentifiedPeople: React.FC = () => {
 
   const fetchPeople = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { data, error } = await supabase
         .from('profiles')
         .select(`
@@ -33,6 +36,7 @@ const IdentifiedPeople: React.FC = () => {
             image_url
           )
         `)
+        .eq('user_id', user.id)
         .order('last_seen', { ascending: false });
 
       if (error) throw error;

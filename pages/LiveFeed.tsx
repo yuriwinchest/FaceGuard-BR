@@ -27,9 +27,14 @@ const LiveFeed: React.FC = () => {
 
   const checkProfiles = async () => {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { count, error } = await supabase
         .from('profiles')
-        .select('*', { count: 'exact', head: true });
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', user.id);
+
       if (!error) setProfileCount(count);
     } catch (err) {
       setProfileCount(0);
@@ -76,7 +81,13 @@ const LiveFeed: React.FC = () => {
 
     // Smooth scanning time
     setTimeout(async () => {
-      const { data } = await supabase.from('profiles').select('full_name').limit(1).single();
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('user_id', user?.id)
+        .limit(1)
+        .single();
 
       if (data) {
         setIdentifiedPerson({
