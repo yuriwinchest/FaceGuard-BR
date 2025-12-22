@@ -120,7 +120,7 @@ const Admin: React.FC = () => {
             <header className="flex items-center justify-between mb-10">
                 <div>
                     <h1 className="text-3xl font-black uppercase tracking-tighter">Painel Admin</h1>
-                    <p className="text-primary text-xs font-bold uppercase tracking-widest mt-1">Controle de Sistema & Biometria</p>
+                    <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em] mt-1">Gestão de Identidade & Biometria</p>
                 </div>
                 <button onClick={() => navigate('/')} className="h-12 w-12 glass rounded-2xl flex items-center justify-center">
                     <span className="material-symbols-outlined">home</span>

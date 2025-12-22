@@ -309,113 +309,115 @@ const LiveFeed: React.FC = () => {
               <span className="text-[9px] font-black text-white/50 uppercase tracking-widest">Base</span>
             </Link>
 
-            <motion.button
-              whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              onClick={handleAction}
-              disabled={isAnalyzing}
-              className="relative h-28 w-28 flex items-center justify-center group"
-            >
-              {/* Arc Reactor Outer Rings */}
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                className={`absolute inset-0 rounded-full border-2 border-dashed border-primary/20 ${isAnalyzing ? 'opacity-100' : 'opacity-40'}`}
-              />
-              <motion.div
-                animate={{ rotate: -360 }}
-                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-                className={`absolute inset-2 rounded-full border border-dotted border-primary/30 ${isAnalyzing ? 'opacity-100' : 'opacity-60'}`}
-              />
-
-              {/* Arc Reactor Tech Segments */}
-              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                {[...Array(6)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ rotate: i * 60 }}
-                    className="absolute w-full h-full flex justify-center"
-                  >
-                    <div className={`w-1.5 h-3 rounded-full mt-1 ${isAnalyzing ? 'bg-primary' : 'bg-primary/20'} transition-colors duration-500`} />
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* Glowing Core */}
-              <div className={`relative h-20 w-20 rounded-full flex items-center justify-center transition-all duration-500 z-10 
-                ${isAnalyzing ? 'bg-primary/30 shadow-[0_0_40px_rgba(19,236,91,0.6)]' :
-                  noFaceDetected ? 'bg-yellow-500/20 shadow-[0_0_30px_rgba(234,179,8,0.3)]' :
-                    notRegistered ? 'bg-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.3)]' :
-                      'bg-primary/10 shadow-[0_0_25px_rgba(255,255,255,0.1)] group-hover:bg-primary/20 group-hover:shadow-[0_0_30px_rgba(19,236,91,0.4)]'
-                }`}
+            {/* Action Button Wrapper */}
+            <div className="relative flex flex-col items-center">
+              <motion.button
+                whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+                onClick={handleAction}
+                disabled={isAnalyzing}
+                className="relative h-28 w-28 flex items-center justify-center group"
               >
-                {/* Inner Core Surface */}
-                <div className={`h-14 w-14 rounded-full flex items-center justify-center border-2 z-20 transition-all duration-500
-                  ${isAnalyzing ? 'bg-primary border-white shadow-glow' :
-                    noFaceDetected ? 'bg-yellow-500 border-yellow-200 shadow-glow-yellow' :
-                      notRegistered ? 'bg-red-500 border-red-200 shadow-glow-red' :
-                        'bg-primary border-primary/50 glow-primary'
+                {/* Arc Reactor Outer Rings */}
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                  className={`absolute inset-0 rounded-full border-2 border-dashed border-primary/20 ${isAnalyzing ? 'opacity-100' : 'opacity-40'}`}
+                />
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                  className={`absolute inset-2 rounded-full border border-dotted border-primary/30 ${isAnalyzing ? 'opacity-100' : 'opacity-60'}`}
+                />
+
+                {/* Arc Reactor Tech Segments */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  {[...Array(6)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ rotate: i * 60 }}
+                      className="absolute w-full h-full flex justify-center"
+                    >
+                      <div className={`w-1.5 h-3 rounded-full mt-1 ${isAnalyzing ? 'bg-primary' : 'bg-primary/20'} transition-colors duration-500`} />
+                    </motion.div>
+                  ))}
+                </div>
+
+                {/* Glowing Core */}
+                <div className={`relative h-20 w-20 rounded-full flex items-center justify-center transition-all duration-500 z-10 
+                  ${isAnalyzing ? 'bg-primary/30 shadow-[0_0_40px_rgba(19,236,91,0.6)]' :
+                    noFaceDetected ? 'bg-yellow-500/20 shadow-[0_0_30px_rgba(234,179,8,0.3)]' :
+                      notRegistered ? 'bg-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.3)]' :
+                        'bg-primary/10 shadow-[0_0_25px_rgba(255,255,255,0.1)] group-hover:bg-primary/20 group-hover:shadow-[0_0_30px_rgba(19,236,91,0.4)]'
                   }`}
                 >
-                  {!isCameraActive && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">power_settings_new</span>}
-                  {isCameraActive && !isAnalyzing && !notRegistered && !noFaceDetected && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">fingerprint</span>}
-                  {isCameraActive && !isAnalyzing && notRegistered && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">person_add</span>}
-                  {isCameraActive && !isAnalyzing && noFaceDetected && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">refresh</span>}
-                  {isAnalyzing && <span className="material-symbols-outlined text-background-dark text-3xl animate-spin">sync</span>}
+                  {/* Inner Core Surface */}
+                  <div className={`h-14 w-14 rounded-full flex items-center justify-center border-2 z-20 transition-all duration-500
+                    ${isAnalyzing ? 'bg-primary border-white shadow-glow' :
+                      noFaceDetected ? 'bg-yellow-500 border-yellow-200 shadow-glow-yellow' :
+                        notRegistered ? 'bg-red-500 border-red-200 shadow-glow-red' :
+                          'bg-primary border-primary/50 glow-primary'
+                    }`}
+                  >
+                    {!isCameraActive && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">power_settings_new</span>}
+                    {isCameraActive && !isAnalyzing && !notRegistered && !noFaceDetected && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">fingerprint</span>}
+                    {isCameraActive && !isAnalyzing && notRegistered && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">person_add</span>}
+                    {isCameraActive && !isAnalyzing && noFaceDetected && <span className="material-symbols-outlined text-background-dark font-medium text-2xl">refresh</span>}
+                    {isAnalyzing && <span className="material-symbols-outlined text-background-dark text-3xl animate-spin">sync</span>}
+                  </div>
                 </div>
+
+                {/* High-Tech HUD Details */}
+                <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+                  <circle
+                    cx="50" cy="50" r="48"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="0.5"
+                    className="text-primary/10"
+                  />
+                  <motion.circle
+                    cx="50" cy="50" r="48"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeDasharray="10 241"
+                    className="text-primary"
+                    animate={{ strokeDashoffset: [0, -301] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  />
+                </svg>
+              </motion.button>
+
+              {/* Subtle Label Under Button */}
+              <div className="absolute top-full mt-4 flex flex-col items-center pointer-events-none">
+                <span className="text-[10px] font-black text-primary/40 uppercase tracking-[0.3em] whitespace-nowrap">
+                  {isAnalyzing ? 'Analisando' : isCameraActive ? 'Sistema Bio' : 'Ativar'}
+                </span>
               </div>
+            </div>
 
-              {/* High-Tech HUD Details */}
-              <svg className="absolute inset-0 w-full h-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
-                <circle
-                  cx="50" cy="50" r="48"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="0.5"
-                  className="text-primary/10"
-                />
-                <motion.circle
-                  cx="50" cy="50" r="48"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeDasharray="10 241"
-                  className="text-primary"
-                  animate={{ strokeDashoffset: [0, -301] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                />
-              </svg>
+            <div className="flex flex-col items-center gap-2 opacity-30">
+              <div className="h-12 w-12 rounded-2xl glass flex items-center justify-center border border-white/5">
+                <span className="material-symbols-outlined text-white">monitoring</span>
+              </div>
+              <span className="text-[9px] font-black text-white/50 uppercase tracking-widest">Logs</span>
+            </div>
+          </div>
+
+          {!isCameraActive && (
+            <motion.button
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+              onClick={() => navigate('/install')}
+              className="flex items-center gap-2 bg-white/5 border border-white/10 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all hover:bg-white/10"
+            >
+              <span className="material-symbols-outlined text-sm">download</span>
+              Instalar PWA
             </motion.button>
-
-            {/* Subtle Label Under Button */}
-            <div className="absolute top-full mt-4 flex flex-col items-center pointer-events-none">
-              <span className="text-[10px] font-bold text-primary/60 uppercase tracking-[0.2em]">
-                {isAnalyzing ? 'Analisando' : isCameraActive ? 'Biometria' : 'Ativar'}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex flex-col items-center gap-2 opacity-30">
-            <div className="h-12 w-12 rounded-2xl glass flex items-center justify-center border border-white/5">
-              <span className="material-symbols-outlined text-white">monitoring</span>
-            </div>
-            <span className="text-[9px] font-black text-white/50 uppercase tracking-widest">Logs</span>
-          </div>
-      </div>
-
-      {!isCameraActive && (
-        <motion.button
-          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
-          onClick={() => navigate('/install')}
-          className="flex items-center gap-2 bg-white/5 border border-white/10 px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all hover:bg-white/10"
-        >
-          <span className="material-symbols-outlined text-sm">download</span>
-          Instalar PWA
-        </motion.button>
-      )}
-    </footer>
+          )}
+        </footer>
       </div >
 
-  <style>{`
+      <style>{`
         .mirror { transform: scaleX(-1); }
         .glow-primary { box-shadow: 0 0 20px rgba(19, 236, 91, 0.4); }
         .shadow-glow { box-shadow: 0 0 10px #13ec5b; }
