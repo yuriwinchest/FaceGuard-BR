@@ -84,20 +84,26 @@
         installContainer.classList.remove('hidden');
       }
 
-      const installBtn = document.getElementById('install-button');
-      if (installBtn) {
-        installBtn.addEventListener('click', async () => {
-          // Hide the app provided install promotion
-          installContainer.classList.add('hidden');
+      // Handle the install trigger regardless of where the button is (Home or Details page)
+      document.addEventListener('click', async (e) => {
+        const target = e.target;
+        // Check if the clicked element is our trigger or inside it
+        if (target && (target.id === 'install-button-trigger' || target.closest('#install-button-trigger'))) {
+          if (!deferredPrompt) return;
+
           // Show the install prompt
           deferredPrompt.prompt();
           // Wait for the user to respond to the prompt
           const { outcome } = await deferredPrompt.userChoice;
           console.log(`User response to the install prompt: ${outcome}`);
-          // We've used the prompt, and can't use it again, throw it away
-          deferredPrompt = null;
-        });
-      }
+
+          if (outcome === 'accepted') {
+            const container = document.getElementById('install-container');
+            if (container) container.classList.add('hidden');
+            deferredPrompt = null;
+          }
+        }
+      });
     });
 
     window.addEventListener('appinstalled', () => {

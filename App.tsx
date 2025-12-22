@@ -6,6 +6,7 @@ import IdentifiedPeople from './pages/IdentifiedPeople';
 import Settings from './pages/Settings';
 import ModelDownloads from './pages/ModelDownloads';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import InstallDetails from './pages/InstallDetails';
 
 // Helper for transitions or persistent layouts if needed
 const AppLayout = ({ children }: { children?: React.ReactNode }) => {
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/settings" element={<Settings />} />
           <Route path="/settings/models" element={<ModelDownloads />} />
           <Route path="/settings/privacy" element={<PrivacyPolicy />} />
+          <Route path="/install" element={<InstallDetails />} />
         </Routes>
       </AppLayout>
     </HashRouter>

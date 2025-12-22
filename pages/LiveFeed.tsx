@@ -132,11 +132,11 @@ const LiveFeed: React.FC = () => {
             </div>
           </div>
 
-          {/* Hidden PWA Install Button shown only when available */}
+          {/* PWA Install Button shown only when available */}
           <div id="install-container" className="hidden animate-enter">
             <button
-              id="install-button"
-              className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/20 px-6 py-2 font-bold text-primary backdrop-blur-md transition-all hover:bg-primary/30 active:scale-95"
+              onClick={() => navigate('/install')}
+              className="flex items-center gap-2 rounded-full border border-primary/30 bg-primary/20 px-6 py-2 font-bold text-primary backdrop-blur-md transition-all hover:bg-primary/30 active:scale-95 shadow-[0_0_20px_rgba(19,236,91,0.2)]"
             >
               <span className="material-symbols-outlined">download</span>
               Instalar App
