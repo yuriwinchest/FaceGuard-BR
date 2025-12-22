@@ -72,6 +72,7 @@ const AnimatedRoutes = () => {
         <Route path="/settings/models" element={<ProtectedRoute><PageWrapper><ModelDownloads /></PageWrapper></ProtectedRoute>} />
         <Route path="/settings/privacy" element={<ProtectedRoute><PageWrapper><PrivacyPolicy /></PageWrapper></ProtectedRoute>} />
         <Route path="/install" element={<PageWrapper><InstallDetails /></PageWrapper>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AnimatePresence>
   );

@@ -73,7 +73,23 @@ const Admin: React.FC = () => {
         </div>
     );
 
-    if (!isAdmin) return null;
+    if (!isAdmin) return (
+        <div className="h-screen w-full bg-background-dark flex flex-col items-center justify-center p-12 text-center">
+            <div className="w-20 h-20 rounded-3xl bg-red-500/10 border border-red-500/20 text-red-500 flex items-center justify-center mb-6">
+                <span className="material-symbols-outlined text-4xl">lock_person</span>
+            </div>
+            <h2 className="text-xl font-black uppercase tracking-tighter text-white mb-2">Acesso Restrito</h2>
+            <p className="text-xs text-white/40 font-bold uppercase tracking-widest leading-relaxed mb-8">
+                Seu nível de acesso atual não permite visualizar esta área.
+            </p>
+            <button
+                onClick={() => navigate('/')}
+                className="px-8 h-14 bg-white/5 border border-white/10 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all"
+            >
+                Voltar ao Início
+            </button>
+        </div>
+    );
 
     return (
         <div className="min-h-screen w-full bg-background-dark text-white p-6 pb-24">
@@ -90,11 +106,11 @@ const Admin: React.FC = () => {
             <div className="grid grid-cols-2 gap-4 mb-8">
                 <div className="glass p-5 rounded-3xl border border-primary/10">
                     <span className="text-[10px] font-black opacity-40 uppercase tracking-widest">Total de Perfis</span>
-                    <div className="text-2xl font-black mt-1">{profiles.length}</div>
+                    <div className="text-2xl font-black mt-1">{profiles?.length || 0}</div>
                 </div>
                 <div className="glass p-5 rounded-3xl border border-white/5">
-                    <span className="text-[10px] font-black opacity-40 uppercase tracking-widest">Sessões Ativas</span>
-                    <div className="text-2xl font-black mt-1 text-primary">Ativas</div>
+                    <span className="text-[10px] font-black opacity-40 uppercase tracking-widest">Estado</span>
+                    <div className="text-2xl font-black mt-1 text-primary">Sincronizado</div>
                 </div>
             </div>
 
